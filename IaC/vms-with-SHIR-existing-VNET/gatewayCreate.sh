@@ -1,3 +1,5 @@
+#!/bin/bash
+
 token=$(az account get-access-token --resource https://purview.azure.net --query accessToken" -o tsv)
 ir=$(az rest --method put \
        --url $scanEndpoint/integrationRuntimes/$integrationRuntimeName?api-version=2022-02-01-preview \
