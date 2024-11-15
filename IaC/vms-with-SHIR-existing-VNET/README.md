@@ -27,3 +27,5 @@ This template can help you create self-hosted IR and make it workable in azure V
 
 The following pictures show you how to get required parameters:
 ![Purview scan endpoint](../../images/purview-scan-endpoint.png)
+![VNET](../../images/vnet.png)
+![Subnet](../../images/subnet.png)
