@@ -68,8 +68,26 @@
         "description": ""
       }
     },
+    "networkSecurityGroupRules": {
+      "type": "object",
+      "defaultValue": [
+        {
+          "name": "default-allow-rdp",
+          "properties": {
+            "priority": 1000,
+            "sourceAddressPrefix": "*",
+            "protocol": "Tcp",
+            "destinationPortRange": "3389",
+            "access": "Allow",
+            "direction": "Inbound",
+            "sourcePortRange": "*",
+            "destinationAddressPrefix": "*"
+          }
+        }
+      ]
+    },
     "zoneId": {
-      "type": "string",
+      "type": "int",
       "metadata": {
         "description": ""
       }
@@ -99,6 +117,15 @@
   },
   "resources": [
     {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2022-05-01",
+      "name": "[parameters('networkSecurityGroupName')]",
+      "location": "[parameters('virtualNetworkLocation')]",
+      "properties": {
+        "securityRules": "[parameters('networkSecurityGroupRules')]"
+      }
+    },
+    {
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2022-05-01",
       "name": "[parameters('nicName')]",
@@ -118,7 +145,10 @@
         "networkSecurityGroup": {
           "id": "[variables('nsgId')]"
         }
-      }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]"
+      ]
     },
     {
       "type": "Microsoft.Compute/virtualMachines",

@@ -5,13 +5,13 @@
     "purviewScanEndpoint": {
       "type": "string",
       "metadata": {
-        "description": ""
+        "description": "Scan Endpoint of the Microsoft Purview account where IR will be created"
       }
     },
     "purviewIntegrationRuntimeName": {
       "type": "string",
       "metadata": {
-        "description": ""
+        "description": "Name of the Integration Runtime"
       }
     },
     "purviewIntegrationRuntimeNodeCount": {
@@ -20,7 +20,7 @@
       "maxValue": 4,
       "minValue": 1,
       "metadata": {
-        "description": "the node count is between 1 and 4."
+        "description": "The node count is between 1 and 4."
       }
     },
     "purviewAdminUserAssignedIdentityResourceGroup": {
@@ -38,25 +38,27 @@
     "virtualMachineName": {
       "type": "string",
       "metadata": {
-        "description": ""
+        "description": "Name of the virtual machine for the IR (it will include a suffix if more than 1 node is deployed)"
       }
     },
     "nicName": {
       "type": "string",
       "metadata": {
-        "description": ""
+        "description": "Name of the network interface of the virtual machine for the IR (it will include a suffix if more than 1 node is deployed)"
       }
     },
     "osDiskName": {
       "type": "string",
       "metadata": {
-        "description": ""
+        "description": "Name of the OS disk of the virtual machine for the IR (it will include a suffix if more than 1 node is deployed)"
       }
     },
     "virtualMachineZone": {
-      "type": "string",
+      "type": "int",
+      "maxValue": 4,
+      "minValue": 1,
       "metadata": {
-        "description": ""
+        "description": "Availability Zone in which to place the virtual machine"
       }
     },
     "virtualMachineSize": {
@@ -70,21 +72,21 @@
       "type": "string",
       "defaultValue": "MicrosoftWindowsDesktop",
       "metadata": {
-        "description": ""
+        "description": "Publisher of the image for the virtual machine"
       }
     },
     "virtualMachineImageOffer": {
       "type": "string",
       "defaultValue": "Windows-10",
       "metadata": {
-        "description": ""
+        "description": "Offer of the image for the virtual machine"
       }
     },
     "virtualMachineImageSku": {
       "type": "string",
       "defaultValue": "win10-22h2-pro-g2",
       "metadata": {
-        "description": ""
+        "description": "SKU of the image for the virtual machine"
       }
     },
     "adminUserName": {
@@ -108,22 +110,28 @@
     "existingVnetName": {
       "type": "string",
       "metadata": {
-        "description": "your existing vnet name"
+        "description": "Name of the existing VNET"
       }
     },
     "existingVnetLocation": {
       "type": "string",
       "metadata": {
-        "description": "your virtual machine will be create in the same datacenter with VNET"
+        "description": "Location of the existing VNET. Virtual machine will be created in the same datacenter as VNET"
       }
     },
     "networkSecurityGroupName": {
       "type": "string",
       "metadata": {
-        "description": ""
+        "description": "Name of the Network Security Group"
       }
     },
-    "existingSubnetInYourVnet": {
+    "networkSecurityGroupRules": {
+      "type": "string",
+      "metadata": {
+        "description": "Rules of the Network Security Group"
+      }
+    },
+    "existingVnetSubnetName": {
       "type": "string",
       "metadata": {
         "description": "Name of the subnet in the virtual network you want to use"
@@ -132,28 +140,28 @@
     "scriptName": {
       "type": "string",
       "metadata": {
-        "description": ""
+        "description": "Name of the script resource to include the execution of script for IR creation"
       }
     },
     "uriDownload": {
       "type": "string",
       "defaultValue": "https://download.microsoft.com/download/1/a/b/1abce8bb-2ecd-4941-9266-0344602ec6db/IntegrationRuntime_5.46.9029.1.msi",
       "metadata": {
-        "description": ""
+        "description": "URL to download IR software"
       }
     },
     "_artifactsLocation": {
       "type": "string",
       "defaultValue": "[deployment().properties.templateLink.uri]",
       "metadata": {
-        "description": "The base URI where artifacts required by this template are located."
+        "description": "The base URI where artifacts required by this template are located"
       }
     },
     "_artifactsLocationSasToken": {
       "type": "securestring",
       "defaultValue": "",
       "metadata": {
-        "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
+        "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated"
       }
     }
   },
@@ -235,10 +243,13 @@
             "value": "[parameters('existingVnetName')]"
           },
           "subnetName": {
-            "value": "[parameters('existingSubnetInYourVnet')]"
+            "value": "[parameters('existingVnetSubnetName')]"
           },
           "networkSecurityGroupName": {
             "value": "[parameters('networkSecurityGroupName')]"
+          },
+          "networkSecurityGroupRules": {
+            "value": "[parameters('networkSecurityGroupRules')]"
           },
           "zoneId": {
             "value": "[parameters('virtualMachineZone')]"
