@@ -8,7 +8,7 @@ urlFragment: vms-existing-VNET
 languages:
 - json
 ---
-# Self-host Integration Runtime on Azure VMs
+# Azure VM joined to an existing VNET
 
 Before deploying the template you must have the following
 
