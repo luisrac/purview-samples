@@ -26,4 +26,4 @@ When you deploy this Azure Resource Template, you will create a logical selfhost
 This template can help you create self-hosted IR and make it workable in azure VMs. The VM must join in an existing VNET.
 
 The following pictures show you how to get requirted parameters:
-![Purview scan endpoint](images/purview-scan-endpoint.png)
+![Purview scan endpoint](../../images/purview-scan-endpoint.png)
