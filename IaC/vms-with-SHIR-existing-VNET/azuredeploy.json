@@ -281,7 +281,11 @@
         "protectedSettings": {
           "commandToExecute": "[format('powershell.exe -ExecutionPolicy Unrestricted -File gatewayInstall.ps1 {0} {1}', reference(resourceId('Microsoft.Resources/deploymentScripts', parameters('scriptName')), '2020-10-01').outputs.authKey1, parameters('uriDownload'))]"
         }
-      }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deploymentScripts', parameters('scriptName'))]",
+        "VMtemplate"
+      ]
     }
   ],
   "outputs": {
