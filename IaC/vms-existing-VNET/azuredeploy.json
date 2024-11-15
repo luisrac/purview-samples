@@ -69,7 +69,7 @@
       }
     },
     "networkSecurityGroupRules": {
-      "type": "object",
+      "type": "array",
       "defaultValue": [
         {
           "name": "default-allow-rdp",

@@ -126,7 +126,7 @@
       }
     },
     "networkSecurityGroupRules": {
-      "type": "object",
+      "type": "array",
       "defaultValue": [],
       "metadata": {
         "description": "Rules of the Network Security Group"
