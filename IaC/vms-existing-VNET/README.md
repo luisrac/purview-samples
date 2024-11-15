@@ -23,5 +23,7 @@ When you deploy this Azure Resource Template, you will create a logical selfhost
 - Disk
 
 The following pictures show you how to get required parameters:
+
 ![VNET](../../images/vnet.png)
+
 ![Subnet](../../images/subnet.png)
