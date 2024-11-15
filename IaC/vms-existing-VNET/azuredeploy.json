@@ -5,67 +5,67 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": ""
+        "description": "Name of the virtual machine"
       }
     },
     "nicName": {
       "type": "string",
       "metadata": {
-        "description": ""
+        "description": "Name of the network interface of the virtual machine"
       }
     },
     "osDiskName": {
       "type": "string",
       "metadata": {
-        "description": ""
+        "description": "Name of the OS disk of the virtual machine"
       }
     },
     "imagePublisher": {
       "type": "string",
       "metadata": {
-        "description": ""
+        "description": "Publisher of the image for the virtual machine"
       }
     },
     "imageOffer": {
       "type": "string",
       "metadata": {
-        "description": ""
+        "description": "Offer of the image for the virtual machine"
       }
     },
     "imageSku": {
       "type": "string",
       "metadata": {
-        "description": ""
+        "description": "SKU of the image for the virtual machine"
       }
     },
     "virtualNetworkResourceGroup": {
       "type": "string",
       "metadata": {
-        "description": ""
+        "description": "Name of the existing VNET resource group"
       }
     },
     "virtualNetworkLocation": {
       "type": "string",
       "metadata": {
-        "description": ""
+        "description": "Location of the existing VNET. Virtual machine will be created in the same datacenter as VNET"
       }
     },
     "virtualNetworkName": {
       "type": "string",
       "metadata": {
-        "description": ""
+        "description": "Name of the existing VNET"
       }
     },
     "subnetName": {
       "type": "string",
       "metadata": {
-        "description": ""
+        "description": "Name of the subnet in the virtual network you want to use"
       }
     },
     "networkSecurityGroupName": {
       "type": "string",
       "metadata": {
-        "description": ""
+        "description": "Name of the Network Security Group"
       }
     },
     "networkSecurityGroupRules": {
@@ -84,30 +84,35 @@
             "destinationAddressPrefix": "*"
           }
         }
-      ]
+      ],
+      "metadata": {
+        "description": "Rules of the Network Security Group"
+      }
     },
     "zoneId": {
       "type": "int",
+      "maxValue": 3,
+      "minValue": 1,
       "metadata": {
-        "description": ""
+        "description": "Availability Zone in which to place the virtual machine"
       }
     },
     "size": {
       "type": "string",
       "metadata": {
-        "description": ""
+        "description": "SKU Size for the VM"
       }
     },
     "adminUserName": {
       "type": "string",
       "metadata": {
-        "description": ""
+        "description": "User name for the virtual machine"
       }
     },
     "adminPassword": {
       "type": "securestring",
       "metadata": {
-        "description": ""
+        "description": "Password for the virtual machine"
       }
     }
   },

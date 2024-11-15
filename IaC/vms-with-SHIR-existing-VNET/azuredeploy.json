@@ -55,7 +55,7 @@
     },
     "virtualMachineZone": {
       "type": "int",
-      "maxValue": 4,
+      "maxValue": 3,
       "minValue": 1,
       "metadata": {
         "description": "Availability Zone in which to place the virtual machine"
@@ -197,7 +197,6 @@
         ],
         "primaryScriptUri": "[variables('scriptCreateURL')]",
         "timeout": "PT30M",
-        "cleanupPreference": "OnSuccess",
         "retentionInterval": "P1D"
       }
     },
