@@ -289,14 +289,5 @@
       ]
     }
   ],
-  "outputs": {
-    "scriptCreateURL": {
-      "type": "string",
-      "value": "[variables('scriptCreateURL')]"
-    },
-    "scriptInstallURL": {
-      "type": "string",
-      "value": "[variables('scriptInstallURL')]"
-    }
-  }
+  "outputs": {}
 }
