@@ -1,0 +1,166 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "nicName": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "osDiskName": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "imagePublisher": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "imageOffer": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "imageSku": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "virtualNetworkResourceGroup": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "virtualNetworkLocation": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "virtualNetworkName": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "subnetName": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "networkSecurityGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "zoneId": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "size": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "adminUserName": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": ""
+      }
+    }
+  },
+  "variables": {
+    "nsgId": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]",
+    "subnetId": "[resourceId(parameters('virtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2022-05-01",
+      "name": "[parameters('nicName')]",
+      "location": "[parameters('virtualNetworkLocation')]",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('subnetId')]"
+              }
+            }
+          }
+        ],
+        "networkSecurityGroup": {
+          "id": "[variables('nsgId')]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2022-08-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('virtualNetworkLocation')]",
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('size')]"
+        },
+        "osProfile": {
+          "computerName": "[parameters('name')]",
+          "adminUsername": "[parameters('adminUserName')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[parameters('imagePublisher')]",
+            "offer": "[parameters('imageOffer')]",
+            "sku": "[parameters('imageSku')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "[parameters('osDiskName')]",
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('nicName'))]"
+            }
+          ]
+        }
+      },
+      "zones": [
+        "[parameters('zoneId')]"
+      ],
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', parameters('nicName'))]"
+      ]
+    }
+  ]
+}

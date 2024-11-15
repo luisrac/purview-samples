@@ -1,0 +1,289 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "purviewScanEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "purviewIntegrationRuntimeName": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "purviewIntegrationRuntimeNodeCount": {
+      "type": "int",
+      "defaultValue": 1,
+      "maxValue": 4,
+      "minValue": 1,
+      "metadata": {
+        "description": "the node count is between 1 and 4."
+      }
+    },
+    "purviewAdminUserAssignedIdentityResourceGroup": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource Group of the User Assigned Managed Identity with Data Source Admin permissions in Purview"
+      }
+    },
+    "purviewAdminUserAssignedIdentityName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the User Assigned Managed Identity with Data Source Admin permissions in Purview"
+      }
+    },
+    "virtualMachineName": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "nicName": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "osDiskName": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "virtualMachineZone": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "virtualMachineSize": {
+      "type": "string",
+      "defaultValue": "Standard_DS1_v2",
+      "metadata": {
+        "description": "SKU Size for the VMs"
+      }
+    },
+    "virtualMachineImagePublisher": {
+      "type": "string",
+      "defaultValue": "MicrosoftWindowsDesktop",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "virtualMachineImageOffer": {
+      "type": "string",
+      "defaultValue": "Windows-10",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "virtualMachineImageSku": {
+      "type": "string",
+      "defaultValue": "win10-22h2-pro-g2",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "adminUserName": {
+      "type": "string",
+      "metadata": {
+        "description": "User name for the virtual machine"
+      }
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Password for the virtual machine"
+      }
+    },
+    "existingVnetResourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the existing VNET resource group"
+      }
+    },
+    "existingVnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "your existing vnet name"
+      }
+    },
+    "existingVnetLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "your virtual machine will be create in the same datacenter with VNET"
+      }
+    },
+    "networkSecurityGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "existingSubnetInYourVnet": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the subnet in the virtual network you want to use"
+      }
+    },
+    "scriptName": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "uriDownload": {
+      "type": "string",
+      "defaultValue": "https://download.microsoft.com/download/1/a/b/1abce8bb-2ecd-4941-9266-0344602ec6db/IntegrationRuntime_5.46.9029.1.msi",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "defaultValue": "[deployment().properties.templateLink.uri]",
+      "metadata": {
+        "description": "The base URI where artifacts required by this template are located."
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
+      }
+    }
+  },
+  "variables": {
+    "scriptCreateURL": "[uri(parameters('_artifactsLocation'), format('gatewayCreate.sh{0}', parameters('_artifactsLocationSasToken')))]",
+    "scriptInstallURL": "[uri(parameters('_artifactsLocation'), format('gatewayInstall.ps1{0}', parameters('_artifactsLocationSasToken')))]",
+    "purviewAdminUserAssignedIdentity": "[createObject(concat('/subscriptions/', subscription().subscriptionId, '/resourcegroups/', parameters('purviewAdminUserAssignedIdentityResourceGroup'), '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/', parameters('purviewAdminUserAssignedIdentityName')), createObject())]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2023-08-01",
+      "name": "[parameters('scriptName')]",
+      "location": "[resourceGroup().location]",
+      "kind": "AzureCLI",
+      "identity": {
+        "type": "userAssigned",
+        "userAssignedIdentities": "[variables('purviewAdminUserAssignedIdentity')]"
+      },
+      "properties": {
+        "forceUpdateTag": "1",
+        "azCliVersion": "2.47.0",
+        "environmentVariables": [
+          {
+            "name": "scanEndpoint",
+            "value": "[parameters('purviewScanEndpoint')]"
+          },
+          {
+            "name": "integrationRuntimeName",
+            "secureValue": "[parameters('purviewIntegrationRuntimeName')]"
+          }
+        ],
+        "primaryScriptUri": "[variables('scriptCreateURL')]",
+        "timeout": "PT30M",
+        "retentionInterval": "P1D"
+      }
+    },
+    {
+      "copy": {
+        "name": "VMtemplate",
+        "count": "[length(range(0, parameters('purviewIntegrationRuntimeNodeCount')))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('vmCopy-{0}', range(0, parameters('purviewIntegrationRuntimeNodeCount'))[copyIndex()])]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri":"https://raw.githubusercontent.com/luisrac/purview-samples/master/IaC/vms-existing-VNET/azuredeploy.json",
+          "contentVersion":"1.0.0.0"
+        },
+        "parameters": {
+          "name": {
+            "value": "[if(equals(parameters('purviewIntegrationRuntimeNodeCount'), 1), parameters('virtualMachineName'), concat(parameters('virtualMachineName'), '-', range(0, parameters('purviewIntegrationRuntimeNodeCount'))[copyIndex()]))]"
+          },
+          "nicName": {
+            "value": "[if(equals(parameters('purviewIntegrationRuntimeNodeCount'), 1), parameters('nicName'), concat(parameters('nicName'), '-', range(0, parameters('purviewIntegrationRuntimeNodeCount'))[copyIndex()]))]"
+          },
+          "osDiskName": {
+            "value": "[if(equals(parameters('purviewIntegrationRuntimeNodeCount'), 1), parameters('osDiskName'), concat(parameters('osDiskName'), '-', range(0, parameters('purviewIntegrationRuntimeNodeCount'))[copyIndex()]))]"
+          },
+          "imagePublisher": {
+            "value": "[parameters('virtualMachineImagePublisher')]"
+          },
+          "imageOffer": {
+            "value": "[parameters('virtualMachineImageOffer')]"
+          },
+          "imageSku": {
+            "value": "[parameters('virtualMachineImageSku')]"
+          },
+          "virtualNetworkResourceGroup": {
+            "value": "[parameters('existingVnetResourceGroupName')]"
+          },
+          "virtualNetworkLocation": {
+            "value": "[parameters('existingVnetLocation')]"
+          },
+          "virtualNetworkName": {
+            "value": "[parameters('existingVnetName')]"
+          },
+          "subnetName": {
+            "value": "[parameters('existingSubnetInYourVnet')]"
+          },
+          "networkSecurityGroupName": {
+            "value": "[parameters('networkSecurityGroupName')]"
+          },
+          "zoneId": {
+            "value": "[parameters('virtualMachineZone')]"
+          },
+          "size": {
+            "value": "[parameters('virtualMachineSize')]"
+          },
+          "adminUserName": {
+            "value": "[parameters('adminUserName')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          }
+        }
+      }
+    },
+    {
+      "copy": {
+        "name": "IRInstalltemplate",
+        "count": "[length(range(0, parameters('purviewIntegrationRuntimeNodeCount')))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "apiVersion": "2023-03-01",
+      "name": "[format('{0}/installGW', if(equals(parameters('purviewIntegrationRuntimeNodeCount'), 1), parameters('virtualMachineName'), concat(parameters('virtualMachineName'), '-', range(0, parameters('purviewIntegrationRuntimeNodeCount'))[copyIndex()])))]",
+      "location": "[parameters('existingVnetLocation')]",
+      "tags": {
+        "vmname": "[if(equals(parameters('purviewIntegrationRuntimeNodeCount'), 1), parameters('virtualMachineName'), concat(parameters('virtualMachineName'), '-', range(0, parameters('purviewIntegrationRuntimeNodeCount'))[copyIndex()]))]"
+      },
+      "properties": {
+        "publisher": "Microsoft.Compute",
+        "type": "CustomScriptExtension",
+        "typeHandlerVersion": "1.7",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": [
+            "[variables('scriptInstallURL')]"
+          ]
+        },
+        "protectedSettings": {
+          "commandToExecute": "[format('powershell.exe -ExecutionPolicy Unrestricted -File gatewayInstall.ps1 {0} {1}', reference(resourceId('Microsoft.Resources/deploymentScripts', parameters('scriptName')), '2020-10-01').outputs.authKey1, parameters('uriDownload'))]"
+        }
+      }
+    }
+  ],
+  "outputs": {
+  }
+}
