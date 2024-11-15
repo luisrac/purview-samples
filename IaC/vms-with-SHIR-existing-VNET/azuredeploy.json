@@ -188,6 +188,7 @@
         ],
         "primaryScriptUri": "[variables('scriptCreateURL')]",
         "timeout": "PT30M",
+        "cleanupPreference": "OnSuccess",
         "retentionInterval": "P1D"
       }
     },
