@@ -207,13 +207,13 @@
         },
         "parameters": {
           "name": {
-            "value": "[if(equals(parameters('purviewIntegrationRuntimeNodeCount'), 1), parameters('virtualMachineName'), concat(parameters('virtualMachineName'), '-', range(0, parameters('purviewIntegrationRuntimeNodeCount'))[copyIndex()]))]"
+            "value": "[if(equals(parameters('purviewIntegrationRuntimeNodeCount'), 1), parameters('virtualMachineName'), concat(parameters('virtualMachineName'), range(0, parameters('purviewIntegrationRuntimeNodeCount'))[copyIndex()]))]"
           },
           "nicName": {
-            "value": "[if(equals(parameters('purviewIntegrationRuntimeNodeCount'), 1), parameters('nicName'), concat(parameters('nicName'), '-', range(0, parameters('purviewIntegrationRuntimeNodeCount'))[copyIndex()]))]"
+            "value": "[if(equals(parameters('purviewIntegrationRuntimeNodeCount'), 1), parameters('nicName'), concat(parameters('nicName'), range(0, parameters('purviewIntegrationRuntimeNodeCount'))[copyIndex()]))]"
           },
           "osDiskName": {
-            "value": "[if(equals(parameters('purviewIntegrationRuntimeNodeCount'), 1), parameters('osDiskName'), concat(parameters('osDiskName'), '-', range(0, parameters('purviewIntegrationRuntimeNodeCount'))[copyIndex()]))]"
+            "value": "[if(equals(parameters('purviewIntegrationRuntimeNodeCount'), 1), parameters('osDiskName'), concat(parameters('osDiskName'), range(0, parameters('purviewIntegrationRuntimeNodeCount'))[copyIndex()]))]"
           },
           "imagePublisher": {
             "value": "[parameters('virtualMachineImagePublisher')]"
