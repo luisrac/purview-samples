@@ -1,0 +1,68 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "avm"
+    },
+    "nicName": {
+      "value": "avmnic"
+    },
+    "osDiskName": {
+      "value": "avmdisk"
+    },
+    "imagePublisher": {
+      "value": "MicrosoftWindowsDesktop"
+    },
+    "imageOffer": {
+      "value": "Windows-10"
+    },
+    "imageSku": {
+      "value": "win10-22h2-pro-g2"
+    },
+    "virtualNetworkResourceGroup": {
+      "value": "vnetrsg"
+    },
+    "virtualNetworkLocation": {
+      "value": "westeurope"
+    },
+    "virtualNetworkName": {
+      "value": "vnet"
+    },
+    "subnetName": {
+      "value": "default"
+    },
+    "networkSecurityGroupName": {
+      "value": "vnetnsg"
+    },
+    "networkSecurityGroupRules": {
+      "value": [
+        {
+          "name": "default-allow-rdp",
+          "properties": {
+            "priority": 1000,
+            "sourceAddressPrefix": "*",
+            "protocol": "Tcp",
+            "destinationPortRange": "3389",
+            "access": "Allow",
+            "direction": "Inbound",
+            "sourcePortRange": "*",
+            "destinationAddressPrefix": "*"
+          }
+        }
+      ]
+    },
+    "zoneId": {
+      "value": 1
+    },
+    "size": {
+      "value": "Standard_DS1_v2"
+    },
+    "adminUserName": {
+      "value": "vmadmuser"
+    },
+    "adminPassword": {
+      "value": "*****"
+    }
+  }
+}

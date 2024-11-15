@@ -1,0 +1,89 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "purviewScanEndpoint": {
+      "value": "https://GUID-api.purview-service.microsoft.com/scan"
+    },
+    "purviewIntegrationRuntimeName": {
+      "value": "IntegrationRuntimeName"
+    },
+    "purviewIntegrationRuntimeNodeCount": {
+      "value": 1
+    },
+    "purviewAdminUserAssignedIdentityResourceGroup": {
+      "value": "umirsg"
+    },
+    "purviewAdminUserAssignedIdentityName": {
+      "value": "umi"
+    },
+    "virtualMachineName": {
+      "value": "avm"
+    },
+    "nicName": {
+      "value": "avmnic"
+    },
+    "osDiskName": {
+      "value": "avmdisk"
+    },
+    "virtualMachineZone": {
+      "value": 1
+    },
+    "virtualMachineSize": {
+      "value": "Standard_DS1_v2"
+    },
+    "virtualMachineImagePublisher": {
+      "value": "MicrosoftWindowsDesktop"
+    },
+    "virtualMachineImageOffer": {
+      "value": "Windows-10"
+    },
+    "virtualMachineImageSku": {
+      "value": "win10-22h2-pro-g2"
+    },
+    "adminUserName": {
+      "value": "vmadmuser"
+    },
+    "adminPassword": {
+      "value": "*****"
+    },
+    "existingVnetResourceGroupName": {
+      "value": "vnetrsg"
+    },
+    "existingVnetName": {
+      "value": "vnet"
+    },
+    "existingVnetLocation": {
+      "value": "westeurope"
+    },
+    "networkSecurityGroupName": {
+      "value": "vnetnsg"
+    },
+    "networkSecurityGroupRules": {
+      "value": [
+        {
+          "name": "default-allow-rdp",
+          "properties": {
+            "priority": 1000,
+            "sourceAddressPrefix": "*",
+            "protocol": "Tcp",
+            "destinationPortRange": "3389",
+            "access": "Allow",
+            "direction": "Inbound",
+            "sourcePortRange": "*",
+            "destinationAddressPrefix": "*"
+          }
+        }
+      ]
+    },
+    "existingVnetSubnetName": {
+      "value": "default"
+    },
+    "scriptName": {
+      "value": "scr"
+    },
+    "uriDownload": {
+      "value": "https://download.microsoft.com/download/1/a/b/1abce8bb-2ecd-4941-9266-0344602ec6db/IntegrationRuntime_5.46.9029.1.msi"
+    }
+  }
+}
